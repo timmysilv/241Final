@@ -22,6 +22,8 @@ module topModule(CLOCK_50,SW,KEY,VGA_CLK,VGA_HS,VGA_VS,VGA_BLANK_N,VGA_SYNC_N,VG
 	wire [5:0] frame;
 	wire reset,clk5sec;
 	
+	//test
+	
 	assign reset = SW[9];
 	
 	clocks clks(CLOCK_50, reset, frame, clk5sec);
@@ -85,12 +87,14 @@ module shiftScreen(clk60,write,xAddr,yReg);
 	
 	always@(posedge clk60) begin
 		write = 1'b1;
-		for(xAddr = 10'd1023; xAddr >= 10'd0; xAddr = xAddr - 1'b1) begin
+		for(xAddr = 10'd1023; xAddr > 10'd0; xAddr = xAddr - 1'b1) begin
 			yCur = yReg; //Store current value
 			yReg = yPrev; //Change current to previous
 			if(xAddr == 10'd1023) yPrev = 9'd0; //Change 9'd0 to PRNG output
 			else yPrev = yCur; //yPrev will be used on next iteration
 		end
+		xAddr = 10'd0; //Can't loop until 0 inclusive, get a compiler error
+		yReg = yPrev;
 		write = 1'b0;
 	end
 endmodule
